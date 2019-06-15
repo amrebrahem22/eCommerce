@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <h2>{{ object.title }}</h2>
+    <span>{{ object.timestamp|timesince }} ago</span>
+    <p>{{ object.description|linebreaks }}</p>
+
+    {% if object.image %}
+        <img src='{{ object.image.url }}' class='img-fluid' />
+    {% endif %}
+{% endblock %}
