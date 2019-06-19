@@ -4,6 +4,7 @@
 {% url 'about' as about_url %}
 {% url 'login' as login_url %}
 {% url 'register' as register_url %}
+{% url 'cart:home' as cart_url %}
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
     <div class="container">
@@ -26,6 +27,10 @@
             <li class="nav-item {% if request.path == products_url %}active{% endif %}">
             <a class="nav-link" href="{{ products_url }}">Products</a>
           </li>
+            <li class="nav-item {% if request.path == products_url %}active{% endif %}">
+                <a class="nav-link" href="{{ cart_url }}">{{ request.session.cart_items }} <i class="fa fa-shopping-cart"></i></a>
+             </li>
+
             {% if request.user.is_authenticated %}
                 <li class="nav-item {% if request.path == contact_url %}active{% endif %}">
                     <a class="nav-link" href="{{ contact_url }}">Logout</a>

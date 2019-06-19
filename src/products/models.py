@@ -76,6 +76,10 @@ class Product(models.Model):
 
     objects = ProductManager()
 
+    @property
+    def name(self):
+        return self.title
+
     def __str__(self):
         return self.title
 
