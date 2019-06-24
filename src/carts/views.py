@@ -2,7 +2,10 @@ from django.shortcuts import render, redirect
 
 from .models import Cart
 from products.models import Product
-
+from orders.models import Order
+from billing.models import BillingProfile
+from accounts.views import LoginForm, GuestForm
+from accounts.models import GuestEmail
 
 def cart_home(request):
     cart_obj, new_obj = Cart.objects.new_or_get(request)
@@ -26,4 +29,23 @@ def cart_update(request):
     return redirect('cart:home')
 
 
+def checkout_page(request):
+    cart_obj, cart_created = Cart.objects.new_or_get(request)
+    order_obj = None
+    if cart_created or cart_obj.products.count() == 0:
+        return redirect("cart:home")
 
+    login_form = LoginForm()
+    guest_form = GuestForm()
+
+    billing_profile, billing_profile_created = BillingProfile.objects.new_or_get(request)
+    if billing_profile is not None:
+        order_obj, order_obj_created = Order.objects.new_or_get(billing_profile, cart_obj)
+
+    context = {
+        "object": order_obj,
+        "billing_profile": billing_profile,
+        "login_form": login_form,
+        "guest_form": guest_form
+    }
+    return render(request, "carts/checkout.html", context)
