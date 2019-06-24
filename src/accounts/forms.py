@@ -13,6 +13,7 @@ class LoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput)
 
 
+
 class RegisterForm(forms.Form):
     username = forms.CharField()
     email    = forms.EmailField()
@@ -40,17 +41,4 @@ class RegisterForm(forms.Form):
         if password2 != password:
             raise forms.ValidationError("Passwords must match.")
         return data
-
-
-
-
-
-
-
-
-
-
-
-
-
 

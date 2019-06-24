@@ -1,8 +1,8 @@
-from django.db.models import Q
 import random
 import os
 from django.db import models
-from django.db.models.signals import pre_save
+from django.db.models import Q
+from django.db.models.signals import pre_save, post_save
 from django.urls import reverse
 
 from ecommerce.utils import unique_slug_generator
@@ -32,12 +32,12 @@ class ProductQuerySet(models.query.QuerySet):
         return self.filter(featured=True, active=True)
 
     def search(self, query):
-        lookups = (
-                Q(title__icontains=query) |
-                Q(description__icontains=query) |
-                Q(price__icontains=query) |
-                Q(tag__title__icontains=query)
-                )
+        lookups = (Q(title__icontains=query) | 
+                  Q(description__icontains=query) |
+                  Q(price__icontains=query) |
+                  Q(tag__title__icontains=query)
+                  )
+        # tshirt, t-shirt, t shirt, red, green, blue,
         return self.filter(lookups).distinct()
 
 class ProductManager(models.Manager):
@@ -50,15 +50,14 @@ class ProductManager(models.Manager):
     def featured(self): #Product.objects.featured() 
         return self.get_queryset().featured()
 
-    def search(self, query):
-        return self.get_queryset().active().search(query)
-
     def get_by_id(self, id):
         qs = self.get_queryset().filter(id=id) # Product.objects == self.get_queryset()
         if qs.count() == 1:
             return qs.first()
         return None
 
+    def search(self, query):
+        return self.get_queryset().active().search(query)
 
 
 class Product(models.Model):
@@ -71,19 +70,20 @@ class Product(models.Model):
     active          = models.BooleanField(default=True)
     timestamp       = models.DateTimeField(auto_now_add=True)
 
-    def get_absolute_path(self):
-        return reverse('products:detail', kwargs={'slug': self.slug})
-
     objects = ProductManager()
 
-    @property
-    def name(self):
-        return self.title
+    def get_absolute_url(self):
+        #return "/products/{slug}/".format(slug=self.slug)
+        return reverse("products:detail", kwargs={"slug": self.slug})
 
     def __str__(self):
         return self.title
 
     def __unicode__(self):
+        return self.title
+
+    @property
+    def name(self):
         return self.title
 
 

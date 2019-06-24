@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class TagConfig(AppConfig):
+class TagsConfig(AppConfig):
     name = 'tags'

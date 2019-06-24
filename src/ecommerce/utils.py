@@ -23,6 +23,7 @@ def unique_order_id_generator(instance):
     return order_new_id
 
 
+
 def unique_slug_generator(instance, new_slug=None):
     """
     This is for a Django project and it assumes your instance 
